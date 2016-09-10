@@ -12,7 +12,22 @@ gulp.task('less', function () {
         })).pipe(gulp.dest('src/css'));
 });
 
+gulp.task('moveCSS', function () {
+    return gulp.src('src/less/**/*.css').pipe(gulp.dest('src/css'));
+});
+
 gulp.task('serve',['less'], function () {
+    browserSync({
+        server: {
+            baseDir: 'src'
+        }
+    });
+
+    gulp.watch('src/less/**/*.css', ['moveCSS']);
+    gulp.watch(['*.html', 'css/**/*.css', 'js/**/*.js'], {cwd: 'src'}, reload);
+});
+
+gulp.task('dis', ['less'], function () {
     browserSync({
         server: {
             baseDir: 'src'
@@ -21,13 +36,13 @@ gulp.task('serve',['less'], function () {
 
     gulp.watch('src/less/**/*.less', ['less']);
     gulp.watch(['*.html', 'css/**/*.css', 'js/**/*.js'], {cwd: 'src'}, reload);
+
 });
 
 gulp.task('default', ['serve'], function () {
     console.log("gulp start !");
 });
 
-
-gulp.task('dest', function () {
+gulp.task('dest', ['dis'],function () {
    console.log("ready to distribution");
 });
